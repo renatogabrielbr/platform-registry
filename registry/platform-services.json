@@ -1,0 +1,121 @@
+{
+  "version": 2,
+  "description": "Neutral platform service registry. Not owned by TagMe. Run pnpm sync in platform-registry repo.",
+  "registryGithub": "renatogabrielbr/platform-registry",
+  "workspaceRootEnv": "PLATFORM_WORKSPACE_ROOT",
+  "consumers": {
+    "tagme-am": {
+      "id": "tagme-am",
+      "name": "TagMe AvailabilityManager",
+      "github": "tagmefoodsolutions/AvailabilityManager",
+      "localPath": "tagme/AvailabilityManager",
+      "tenantSlug": "tagme",
+      "notes": "First consumer for report-relay and message-relay — not the registry owner"
+    },
+    "tagme-ntm": {
+      "id": "tagme-ntm",
+      "name": "TagMe NewTableManagerFront",
+      "github": "tagmefoodsolutions/NewTableManagerFront",
+      "localPath": "tagme/NewTableManagerFront"
+    }
+  },
+  "services": [
+    {
+      "id": "report-relay",
+      "name": "report-relay",
+      "role": "Async report generation — own Postgres, connectors, blob export",
+      "github": "renatogabrielbr/report-relay",
+      "localPath": "projects/report-relay",
+      "docs": {
+        "index": "docs/README.md",
+        "proposal": "docs/proposal.md",
+        "architecture": "docs/architecture.md",
+        "dataModel": "docs/data-model.md",
+        "connectors": "docs/connectors.md",
+        "roadmap": "docs/roadmap.md",
+        "milestoneUrl": "https://github.com/renatogabrielbr/report-relay/milestone/1",
+        "issuesUrl": "https://github.com/renatogabrielbr/report-relay/issues"
+      },
+      "tenants": [
+        {
+          "slug": "tagme",
+          "connectorName": "tagme-am-prod",
+          "consumerId": "tagme-am"
+        }
+      ],
+      "reportTypes": [
+        {
+          "slug": "reservations.export",
+          "phase": "R4",
+          "formats": ["csv", "xlsx"],
+          "filterContract": {
+            "consumerId": "tagme-am",
+            "sourceDto": "ReportAdminGenerateBodyDTO",
+            "sourcePath": "src/shared/admin-report/dto/report-admin-generate.body.dto.ts",
+            "fields": [
+              { "name": "name", "type": "string", "required": true, "note": "Report label" },
+              {
+                "name": "venueIds",
+                "type": "uuid[]",
+                "required": false,
+                "note": "Omit or empty = all venues"
+              },
+              { "name": "roomIds", "type": "uuid[]", "required": false },
+              {
+                "name": "userIds",
+                "type": "uuid[]",
+                "required": false,
+                "note": "Guest users via venue_user"
+              },
+              { "name": "states", "type": "ReservationStateTypeEnum[]", "required": false },
+              { "name": "date", "type": "YYYY-MM-DD", "required": false, "note": "Single UTC day" },
+              { "name": "timeFrom", "type": "ISO-8601", "required": false },
+              { "name": "timeTo", "type": "ISO-8601", "required": false },
+              { "name": "includeCanceled", "type": "boolean", "required": false, "default": false }
+            ]
+          }
+        }
+      ],
+      "consumerBindings": [
+        {
+          "consumerId": "tagme-am",
+          "integrationIndex": "docs/reports/README.md",
+          "integrationDoc": "docs/reports/am-integration.md",
+          "codePaths": ["src/shared/admin-report/"],
+          "platformConsumerDoc": "docs/consumers/tagme-am.md",
+          "env": {
+            "REPORT_RELAY_URL": "Base URL e.g. https://report-relay.example.com",
+            "REPORT_RELAY_API_KEY": "Service API key for tenant tagme",
+            "REPORT_RELAY_ENABLED": "When true, consumer proxies to report-relay instead of in-process Excel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "message-relay",
+      "name": "message-relay",
+      "role": "SMS, WhatsApp, email delivery — replaces Legacy Communications",
+      "github": "renatogabrielbr/message-relay",
+      "localPath": "projects/message-relay",
+      "docs": {
+        "index": "docs/README.md",
+        "proposal": "docs/proposal-go-v3.md",
+        "roadmap": "docs/roadmap.md",
+        "milestoneUrl": "https://github.com/renatogabrielbr/message-relay/milestone/1",
+        "issuesUrl": "https://github.com/renatogabrielbr/message-relay/issues"
+      },
+      "consumerBindings": [
+        {
+          "consumerId": "tagme-am",
+          "integrationDoc": "docs/venue-integration-alerts.md",
+          "codePaths": ["projects/communication/", "src/shared/reservation/"],
+          "platformConsumerDoc": "docs/consumers/tagme-am.md",
+          "env": {
+            "COMMUNICATION_MANAGER_URL": "Base URL — same HTTP contract as Legacy"
+          },
+          "notes": "Transport only. Venue client webhooks stay on consumer app — not message-relay."
+        }
+      ]
+    }
+  ]
+}

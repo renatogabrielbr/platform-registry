@@ -1,0 +1,10 @@
+{
+  "name": "platform-registry",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Neutral registry for cross-product platform services — not owned by TagMe or any single consumer",
+  "scripts": {
+    "sync": "node scripts/sync-consumer-docs.mjs"
+  },
+  "type": "module"
+}
