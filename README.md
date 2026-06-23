@@ -7,7 +7,7 @@ Not owned by TagMe, AvailabilityManager, or any single product repo.
 |------|--------|
 | **Registry (single key file)** | [`registry/platform-services.json`](./registry/platform-services.json) |
 | **Sync script** | `pnpm sync` → consumer stubs + integration marker sections |
-| **Docs** | [`docs/README.md`](./docs/README.md) |
+| **Docs** | [`docs/README.md`](./docs/README.md) · **[`docs/ecosystem-start.md`](./docs/ecosystem-start.md)** |
 
 ## Quick start
 
