@@ -57,4 +57,4 @@ flowchart LR
 - [issues/p2-schema-validation.md](./issues/p2-schema-validation.md)
 - [issues/p3-waitlist-consumer.md](./issues/p3-waitlist-consumer.md)
 - [issues/p4-ci-drift-check.md](./issues/p4-ci-drift-check.md)
-- [ecosystem-start.md](./ecosystem-start.md) — **master start guide**
+- [ecosystem-start.md](./ecosystem-start.md) — **main start guide**
