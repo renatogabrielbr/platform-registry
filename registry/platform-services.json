@@ -143,7 +143,7 @@
       "consumerBindings": [
         {
           "consumerId": "tagme-am",
-          "integrationDoc": "docs/venue-integration-alerts.md",
+          "integrationDoc": "docs/comms-message-relay-cutover.md",
           "codePaths": [
             "projects/communication/",
             "src/shared/reservation/",
@@ -151,9 +151,12 @@
           ],
           "platformConsumerDoc": "docs/consumers/tagme-am.md",
           "env": {
-            "COMMUNICATION_MANAGER_URL": "Base URL — same HTTP contract as Legacy; points to message-relay at G4 cutover",
+            "COMMUNICATION_MANAGER_URL": "Base URL — Legacy today; message-relay at G4 cutover",
+            "MESSAGE_RELAY_TRANSLATE": "When true, AM sends message-relay JSON instead of Legacy payload (must match URL target)",
+            "COMMUNICATIONS_TOKEN": "Shared secret sent as communicationstoken header to message-relay (optional for Legacy)",
             "MESSAGE_RELAY_URL": "Optional alias for COMMUNICATION_MANAGER_URL (documentation only until AM reads it)",
-            "MESSAGE_RELAY_INSIGHTS_URL": "G6 — base URL for GET /v1/insights/metrics (optional; Phase 2 Insights)"
+            "MESSAGE_RELAY_INSIGHTS_URL": "G6 — base URL for GET /v1/insights/metrics (optional; Phase 2 Insights)",
+            "MESSAGE_RELAY_WHATSAPP_TEMPLATES_CONFIG": "Optional Blip template map (same shape as Legacy SMS_WPP_ADAPTER_TEMPLATES_CONFIG)"
           },
           "insightsApi": {
             "phase": "G6",
