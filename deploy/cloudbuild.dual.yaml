@@ -1,0 +1,120 @@
+# Dual-ship: build and deploy message-relay + report-relay (4 Cloud Run services).
+# Manual trigger or platform-registry repo push. Requires Cloud Build 2nd-gen connection
+# to sibling repos OR run from a workspace that includes all repos.
+
+substitutions:
+  _REGION: northamerica-south1
+  _AR_PROJECT_ID: tagme-live-menu-dev
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    id: build-mr-api
+    dir: message-relay
+    args:
+      - build
+      - -t
+      - northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/message-relay/api:$SHORT_SHA
+      - -f
+      - deployments/Dockerfile.api
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    id: build-mr-worker
+    dir: message-relay
+    args:
+      - build
+      - -t
+      - northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/message-relay/worker:$SHORT_SHA
+      - -f
+      - deployments/Dockerfile.worker
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    id: build-rr-api
+    dir: report-relay
+    args:
+      - build
+      - -t
+      - northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/report-relay/api:$SHORT_SHA
+      - -f
+      - deployments/Dockerfile.api
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    id: build-rr-worker
+    dir: report-relay
+    args:
+      - build
+      - -t
+      - northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/report-relay/worker:$SHORT_SHA
+      - -f
+      - deployments/Dockerfile.worker
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args: [push, northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/message-relay/api:$SHORT_SHA]
+    waitFor: [build-mr-api]
+
+  - name: gcr.io/cloud-builders/docker
+    args: [push, northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/message-relay/worker:$SHORT_SHA]
+    waitFor: [build-mr-worker]
+
+  - name: gcr.io/cloud-builders/docker
+    args: [push, northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/report-relay/api:$SHORT_SHA]
+    waitFor: [build-rr-api]
+
+  - name: gcr.io/cloud-builders/docker
+    args: [push, northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/report-relay/worker:$SHORT_SHA]
+    waitFor: [build-rr-worker]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - message-relay-api-dev
+      - --image=northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/message-relay/api:$SHORT_SHA
+      - --region=${_REGION}
+      - --quiet
+    waitFor: [build-mr-api]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - message-relay-worker-dev
+      - --image=northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/message-relay/worker:$SHORT_SHA
+      - --region=${_REGION}
+      - --no-allow-unauthenticated
+      - --quiet
+    waitFor: [build-mr-worker]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - report-relay-api-dev
+      - --image=northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/report-relay/api:$SHORT_SHA
+      - --region=${_REGION}
+      - --quiet
+    waitFor: [build-rr-api]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - report-relay-worker-dev
+      - --image=northamerica-south1-docker.pkg.dev/${_AR_PROJECT_ID}/report-relay/worker:$SHORT_SHA
+      - --region=${_REGION}
+      - --no-allow-unauthenticated
+      - --quiet
+    waitFor: [build-rr-worker]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+tags:
+  - platform-dual-ship

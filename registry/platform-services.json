@@ -47,31 +47,65 @@
         {
           "slug": "reservations.export",
           "phase": "R4",
-          "formats": ["csv", "xlsx"],
+          "formats": [
+            "csv",
+            "xlsx"
+          ],
           "filterContract": {
             "consumerId": "tagme-am",
             "sourceDto": "ReportAdminGenerateBodyDTO",
             "sourcePath": "src/shared/admin-report/dto/report-admin-generate.body.dto.ts",
             "fields": [
-              { "name": "name", "type": "string", "required": true, "note": "Report label" },
+              {
+                "name": "name",
+                "type": "string",
+                "required": true,
+                "note": "Report label"
+              },
               {
                 "name": "venueIds",
                 "type": "uuid[]",
                 "required": false,
                 "note": "Omit or empty = all venues"
               },
-              { "name": "roomIds", "type": "uuid[]", "required": false },
+              {
+                "name": "roomIds",
+                "type": "uuid[]",
+                "required": false
+              },
               {
                 "name": "userIds",
                 "type": "uuid[]",
                 "required": false,
                 "note": "Guest users via venue_user"
               },
-              { "name": "states", "type": "ReservationStateTypeEnum[]", "required": false },
-              { "name": "date", "type": "YYYY-MM-DD", "required": false, "note": "Single UTC day" },
-              { "name": "timeFrom", "type": "ISO-8601", "required": false },
-              { "name": "timeTo", "type": "ISO-8601", "required": false },
-              { "name": "includeCanceled", "type": "boolean", "required": false, "default": false }
+              {
+                "name": "states",
+                "type": "ReservationStateTypeEnum[]",
+                "required": false
+              },
+              {
+                "name": "date",
+                "type": "YYYY-MM-DD",
+                "required": false,
+                "note": "Single UTC day"
+              },
+              {
+                "name": "timeFrom",
+                "type": "ISO-8601",
+                "required": false
+              },
+              {
+                "name": "timeTo",
+                "type": "ISO-8601",
+                "required": false
+              },
+              {
+                "name": "includeCanceled",
+                "type": "boolean",
+                "required": false,
+                "default": false
+              }
             ]
           }
         }
@@ -81,7 +115,9 @@
           "consumerId": "tagme-am",
           "integrationIndex": "docs/reports/README.md",
           "integrationDoc": "docs/reports/am-integration.md",
-          "codePaths": ["src/shared/admin-report/"],
+          "codePaths": [
+            "src/shared/admin-report/"
+          ],
           "platformConsumerDoc": "docs/consumers/tagme-am.md",
           "env": {
             "REPORT_RELAY_URL": "Base URL e.g. https://report-relay.example.com",
@@ -108,12 +144,31 @@
         {
           "consumerId": "tagme-am",
           "integrationDoc": "docs/venue-integration-alerts.md",
-          "codePaths": ["projects/communication/", "src/shared/reservation/"],
+          "codePaths": [
+            "projects/communication/",
+            "src/shared/reservation/",
+            "src/shared/insights/"
+          ],
           "platformConsumerDoc": "docs/consumers/tagme-am.md",
           "env": {
-            "COMMUNICATION_MANAGER_URL": "Base URL — same HTTP contract as Legacy"
+            "COMMUNICATION_MANAGER_URL": "Base URL — same HTTP contract as Legacy; points to message-relay at G4 cutover",
+            "MESSAGE_RELAY_URL": "Optional alias for COMMUNICATION_MANAGER_URL (documentation only until AM reads it)",
+            "MESSAGE_RELAY_INSIGHTS_URL": "G6 — base URL for GET /v1/insights/metrics (optional; Phase 2 Insights)"
           },
-          "notes": "Transport only. Venue client webhooks stay on consumer app — not message-relay."
+          "insightsApi": {
+            "phase": "G6",
+            "path": "/v1/insights/metrics",
+            "spec": "docs/issues/g6-insights.md",
+            "amDoc": "tagme/AvailabilityManager/docs/insights/comms-v2-roadmap.md"
+          },
+          "notes": "Transport only. Venue client webhooks stay on consumer app. No per-venue legacy toggle — env cutover only."
+        },
+        {
+          "consumerId": "tagme-ntm",
+          "codePaths": [
+            "src/pages/insights/"
+          ],
+          "notes": "Insights comms charts Phase 1 from AM /insights/comms; Phase 2 delivery funnel when G6 fields present"
         }
       ]
     }

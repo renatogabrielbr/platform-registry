@@ -36,3 +36,16 @@ Neutral contract hub — **not TagMe-owned**. Start here before any platform ser
 <!-- platform-services:index:end -->
 
 Run `pnpm sync` after editing the registry JSON.
+
+## Deploy (solo or dual)
+
+| Doc | Topic |
+|-----|--------|
+| [deploy/deploy-gcp-dual.md](../deploy/deploy-gcp-dual.md) | Dual local compose + dual Cloud Build |
+| [scripts/gcp/provision-cloud-run.ps1](../scripts/gcp/provision-cloud-run.ps1) | Cloud Build trigger provisioning |
+| [scripts/gcp/gcp.config.json](../scripts/gcp/gcp.config.json) | message-relay + report-relay trigger config |
+
+```powershell
+cd projects/platform-registry/scripts/gcp
+.\provision-cloud-run.ps1 -Service all -Environment dev
+```

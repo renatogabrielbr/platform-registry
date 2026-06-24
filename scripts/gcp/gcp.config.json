@@ -1,0 +1,103 @@
+{
+  "gcp": {
+    "projectId": "tagme-live-menu-dev",
+    "region": "northamerica-south1",
+    "serviceAccount": "761556456635-compute@developer.gserviceaccount.com",
+    "arHostname": "northamerica-south1-docker.pkg.dev"
+  },
+  "github": {
+    "owner": "renatogabrielbr"
+  },
+  "cloudRunApps": [
+    {
+      "id": "message-relay",
+      "repo": "message-relay",
+      "cloudbuildFile": "deployments/cloudbuild.yaml",
+      "components": [
+        "api",
+        "worker"
+      ],
+      "environments": {
+        "dev": {
+          "branch": "^main$",
+          "components": {
+            "api": {
+              "serviceName": "message-relay-api-dev",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "message-relay",
+                "_COMPONENT": "api",
+                "_SERVICE_NAME": "message-relay-api-dev"
+              }
+            },
+            "worker": {
+              "serviceName": "message-relay-worker-dev",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "message-relay",
+                "_COMPONENT": "worker",
+                "_SERVICE_NAME": "message-relay-worker-dev"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "report-relay",
+      "repo": "report-relay",
+      "cloudbuildFile": "deployments/cloudbuild.yaml",
+      "components": [
+        "api",
+        "worker"
+      ],
+      "environments": {
+        "dev": {
+          "branch": "^main$",
+          "components": {
+            "api": {
+              "serviceName": "report-relay-api-dev",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "report-relay",
+                "_COMPONENT": "api",
+                "_SERVICE_NAME": "report-relay-api-dev"
+              }
+            },
+            "worker": {
+              "serviceName": "report-relay-worker-dev",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "report-relay",
+                "_COMPONENT": "worker",
+                "_SERVICE_NAME": "report-relay-worker-dev"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "dualTrigger": {
+    "id": "platform-dual",
+    "repo": "platform-registry",
+    "cloudbuildFile": "deploy/cloudbuild.dual.yaml",
+    "environments": {
+      "dev": {
+        "branch": "^main$",
+        "substitutions": {
+          "_REGION": "northamerica-south1",
+          "_AR_PROJECT_ID": "tagme-live-menu-dev"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+﻿# Dependencies
+node_modules/
+.pnpm-store/
+**/pnpm-lock.yaml
+**/package-lock.json
+**/yarn.lock
+
+# Build output
+dist/
+build/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# Agent / chat history (often very large)
+.specstory/
+
+# Logs & caches
+*.log
+logs/
+.cache/
+.eslintcache
+.turbo/
+.nyc_output/
+.scannerwork/
+
+# Flutter / mobile
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+**/ios/Pods/
+**/ios/build/
+**/android/.gradle/
+**/android/build/
+**/.gradle/
+
+# Generated bundles
+**/*.min.js
+**/*.min.css
+**/*.map
+
+# Environment files
+.env
+.env.*

@@ -1,0 +1,62 @@
+name: tagme-platform
+
+services:
+  mr-mongo:
+    image: mongo:7
+  mr-redis:
+    image: redis:7
+  mr-api:
+    build:
+      context: ${PLATFORM_WORKSPACE_ROOT}/projects/message-relay
+      dockerfile: deployments/Dockerfile.api
+    ports:
+      - "3012:8080"
+    environment:
+      MONGO_URI: mongodb://mr-mongo:27017/communications
+      REDIS_ADDR: mr-redis:6379
+      COMMUNICATIONS_TOKEN: dev-token
+    depends_on:
+      - mr-mongo
+      - mr-redis
+  mr-worker:
+    build:
+      context: ${PLATFORM_WORKSPACE_ROOT}/projects/message-relay
+      dockerfile: deployments/Dockerfile.worker
+    environment:
+      MONGO_URI: mongodb://mr-mongo:27017/communications
+      REDIS_ADDR: mr-redis:6379
+    depends_on:
+      - mr-mongo
+      - mr-redis
+
+  rr-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: report_relay
+      POSTGRES_PASSWORD: dev
+    ports:
+      - "5433:5432"
+  rr-redis:
+    image: redis:7
+  rr-api:
+    build:
+      context: ${PLATFORM_WORKSPACE_ROOT}/projects/report-relay
+      dockerfile: deployments/Dockerfile.api
+    ports:
+      - "3020:8080"
+    environment:
+      DATABASE_URL: postgres://postgres:dev@rr-postgres:5432/report_relay?sslmode=disable
+      REDIS_ADDR: rr-redis:6379
+    depends_on:
+      - rr-postgres
+      - rr-redis
+  rr-worker:
+    build:
+      context: ${PLATFORM_WORKSPACE_ROOT}/projects/report-relay
+      dockerfile: deployments/Dockerfile.worker
+    environment:
+      DATABASE_URL: postgres://postgres:dev@rr-postgres:5432/report_relay?sslmode=disable
+      REDIS_ADDR: rr-redis:6379
+    depends_on:
+      - rr-postgres
+      - rr-redis
