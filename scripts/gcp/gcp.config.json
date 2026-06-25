@@ -44,6 +44,33 @@
               }
             }
           }
+        },
+        "staging": {
+          "branch": "^staging$",
+          "components": {
+            "api": {
+              "serviceName": "message-relay-api-staging",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "message-relay",
+                "_COMPONENT": "api",
+                "_SERVICE_NAME": "message-relay-api-staging"
+              }
+            },
+            "worker": {
+              "serviceName": "message-relay-worker-staging",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "message-relay",
+                "_COMPONENT": "worker",
+                "_SERVICE_NAME": "message-relay-worker-staging"
+              }
+            }
+          }
         }
       }
     },
@@ -79,6 +106,33 @@
                 "_AR_REPOSITORY": "report-relay",
                 "_COMPONENT": "worker",
                 "_SERVICE_NAME": "report-relay-worker-dev"
+              }
+            }
+          }
+        },
+        "staging": {
+          "branch": "^staging$",
+          "components": {
+            "api": {
+              "serviceName": "report-relay-api-staging",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "report-relay",
+                "_COMPONENT": "api",
+                "_SERVICE_NAME": "report-relay-api-staging"
+              }
+            },
+            "worker": {
+              "serviceName": "report-relay-worker-staging",
+              "substitutions": {
+                "_REGION": "northamerica-south1",
+                "_AR_HOSTNAME": "northamerica-south1-docker.pkg.dev",
+                "_AR_PROJECT_ID": "tagme-live-menu-dev",
+                "_AR_REPOSITORY": "report-relay",
+                "_COMPONENT": "worker",
+                "_SERVICE_NAME": "report-relay-worker-staging"
               }
             }
           }
